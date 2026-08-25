@@ -24,7 +24,6 @@
 .brand,
 .primary-nav a,
 .project-card,
-.featured-card,
 .discovery-row,
 .section-heading a,
 .upload-data-button {
@@ -295,7 +294,6 @@
 }
 
 .card-image img,
-.featured-card img,
 .selected-preview > img,
 .project-header > img {
   width: 100%;
@@ -485,48 +483,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.featured-list {
-  display: grid;
-  gap: 12px;
-}
-
-.featured-card {
-  display: grid;
-  grid-template-columns: 168px minmax(0, 1fr);
-  gap: 14px;
-  min-height: 124px;
-  padding: 10px;
-  border: 1px solid var(--slate-100);
-  border-radius: 8px;
-  color: var(--slate-900);
-}
-
-.featured-card:hover {
-  border-color: var(--approved-border);
-  background: var(--sage-50);
-}
-
-.featured-card img {
-  border-radius: 6px;
-}
-
-.featured-card div {
-  display: grid;
-  gap: 5px;
-  align-content: center;
-}
-
-.featured-card span,
-.featured-card p {
-  color: var(--slate-700);
-}
-
-.featured-card em {
-  color: var(--emerald-700);
-  font-style: normal;
-  font-weight: 800;
 }
 
 .filter-bar {
@@ -1534,14 +1490,6 @@ td span {
   .compact-metrics,
   .metadata-grid {
     grid-template-columns: 1fr;
-  }
-
-  .featured-card {
-    grid-template-columns: 1fr;
-  }
-
-  .featured-card img {
-    aspect-ratio: 16 / 8;
   }
 
   .upload-page {

@@ -34,7 +34,7 @@ import { UploadDataPage } from './pages/UploadDataPage'
 import './App.css'
 
 type ProjectStatus = 'APPROVED' | 'UNREVIEWED' | 'REJECTED'
-type Category = 'all' | 'recent' | 'high-performance' | 'featured'
+type Category = 'all' | 'recent' | 'high-performance'
 type MetricKey = 'electricity' | 'water' | 'co2e'
 
 type Project = {
@@ -52,8 +52,6 @@ type Project = {
   dataUpdatedAt: string
   addedAt: string
   highPerformance: boolean
-  featured: boolean
-  distinction: string
   metrics: Record<
     MetricKey,
     {
@@ -98,8 +96,6 @@ const projects: Project[] = [
     dataUpdatedAt: '14 Jan 2025',
     addedAt: '14 Jan 2025',
     highPerformance: true,
-    featured: true,
-    distinction: 'Net-zero operational design with industry-leading energy efficiency.',
     metrics: {
       electricity: { label: 'Electricity', value: 118, unit: 'kWh/m2/year', changePercent: -4.2, previousPeriod: 'Q3 2024', isImprovement: true },
       water: { label: 'Water', value: 0.72, unit: 'm3/m2/year', changePercent: -1.8, previousPeriod: 'Q3 2024', isImprovement: true },
@@ -138,8 +134,6 @@ const projects: Project[] = [
     dataUpdatedAt: '03 Feb 2025',
     addedAt: '03 Feb 2025',
     highPerformance: true,
-    featured: true,
-    distinction: 'Verified water reduction across three consecutive quarters.',
     metrics: {
       electricity: { label: 'Electricity', value: 128, unit: 'kWh/m2/year', changePercent: -2.8, previousPeriod: 'Q4 2024', isImprovement: true },
       water: { label: 'Water', value: 1.8, unit: 'm3/m2/year', changePercent: -0.9, previousPeriod: 'Q4 2024', isImprovement: true },
@@ -170,8 +164,6 @@ const projects: Project[] = [
     dataUpdatedAt: '22 Jan 2025',
     addedAt: '21 Jan 2025',
     highPerformance: false,
-    featured: false,
-    distinction: 'New mixed-use precinct with provisional Q4 data under review.',
     metrics: {
       electricity: { label: 'Electricity', value: 144, unit: 'kWh/m2/year', changePercent: 2.4, previousPeriod: 'Q3 2024', isImprovement: false },
       water: { label: 'Water', value: 1.04, unit: 'm3/m2/year', changePercent: -1.1, previousPeriod: 'Q3 2024', isImprovement: true },
@@ -201,8 +193,6 @@ const projects: Project[] = [
     dataUpdatedAt: '18 Jan 2025',
     addedAt: '08 Jan 2025',
     highPerformance: true,
-    featured: false,
-    distinction: 'Strong verified electricity intensity trend over the last year.',
     metrics: {
       electricity: { label: 'Electricity', value: 109, unit: 'kWh/m2/year', changePercent: -5.6, previousPeriod: 'Q3 2024', isImprovement: true },
       water: { label: 'Water', value: 0.68, unit: 'm3/m2/year', changePercent: -1.2, previousPeriod: 'Q3 2024', isImprovement: true },
@@ -232,8 +222,6 @@ const projects: Project[] = [
     dataUpdatedAt: '11 Jan 2025',
     addedAt: '11 Jan 2025',
     highPerformance: false,
-    featured: false,
-    distinction: 'Residential estate with rejected Q3 submission awaiting correction.',
     metrics: {
       electricity: { label: 'Electricity', value: 162, unit: 'kWh/m2/year', changePercent: 3.4, previousPeriod: 'Q2 2024', isImprovement: false },
       water: { label: 'Water', value: 1.31, unit: 'm3/m2/year', changePercent: 0.7, previousPeriod: 'Q2 2024', isImprovement: false },
@@ -262,8 +250,6 @@ const projects: Project[] = [
     dataUpdatedAt: '28 Jan 2025',
     addedAt: '28 Jan 2025',
     highPerformance: false,
-    featured: true,
-    distinction: 'Low-water campus operations verified during first reporting cycle.',
     metrics: {
       electricity: { label: 'Electricity', value: 134, unit: 'kWh/m2/year', changePercent: -1.5, previousPeriod: 'Q3 2024', isImprovement: true },
       water: { label: 'Water', value: 0.64, unit: 'm3/m2/year', changePercent: -4.1, previousPeriod: 'Q3 2024', isImprovement: true },
@@ -290,7 +276,6 @@ const categoryLabels: Record<Category, string> = {
   all: 'All Projects',
   recent: 'Recently Added',
   'high-performance': 'High Performance',
-  featured: 'Featured',
 }
 
 function App() {
@@ -399,7 +384,6 @@ function HomePage({ projects, onToggleHighlight }: { projects: Project[]; onTogg
   const navigate = useNavigate()
   const latestActivity = sortProjects(projects, 'latest-activity').slice(0, 5)
   const recent = [...projects].sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime()).slice(0, 5)
-  const featured = projects.filter((project) => project.featured).slice(0, 2)
   const highPerformance = projects.filter((project) => project.highPerformance).slice(0, 5)
 
   return (
@@ -447,22 +431,6 @@ function HomePage({ projects, onToggleHighlight }: { projects: Project[]; onTogg
             </>
           )}
         />
-        <section className="panel featured-panel">
-          <SectionHeader title="Featured Sustainable Buildings" to="/projects?category=featured" label="View all" />
-          <div className="featured-list">
-            {featured.map((project) => (
-              <Link key={project.projectId} to={`/projects/${project.projectId}`} className="featured-card">
-                <img src={project.imageUrl} alt={`${project.name} building`} loading="lazy" />
-                <div>
-                  <strong>{project.name}</strong>
-                  <span>{project.organisation.name} - {project.location}</span>
-                  <em>{project.certification}</em>
-                  <p>{project.distinction}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
       </div>
     </main>
   )
@@ -494,7 +462,6 @@ function ProjectsPage({ projects, onToggleHighlight }: { projects: Project[]; on
     let result = projects
     if (category === 'recent') result = result.filter((project) => project.addedAt.includes('Jan') || project.addedAt.includes('Feb'))
     if (category === 'high-performance') result = result.filter((project) => project.highPerformance)
-    if (category === 'featured') result = result.filter((project) => project.featured)
     if (filters.location !== 'All') result = result.filter((project) => project.location === filters.location)
     if (filters.type !== 'All') result = result.filter((project) => project.projectType === filters.type)
     if (filters.organisation !== 'All') result = result.filter((project) => project.organisation.id === filters.organisation)
@@ -1000,7 +967,7 @@ function Pagination({ page, totalPages, total, pageSize, onPage }: { page: numbe
 }
 
 function parseCategory(value: string | null): Category {
-  return value === 'recent' || value === 'high-performance' || value === 'featured' ? value : 'all'
+  return value === 'recent' || value === 'high-performance' ? value : 'all'
 }
 
 function sortProjects(input: Project[], sort: string) {
